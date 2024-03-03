@@ -22,7 +22,7 @@ export default function SidebarItem({
   const isActive =
     (pathName === "/" && href === "/") ||
     pathName === href ||
-    pathName.startsWith(`${href}`);
+    pathName.startsWith(`${href}/`);
 
   const onClick = () => {
     router.push(href);
