@@ -15,7 +15,7 @@ export default function LayoutDashboard({
       <div className="hidden md:flex w-56 flex-col fixed inset-y-0 z-50">
         <Sidebar />
       </div>
-      <main className="md:pl-56 h-full"> {children}</main>
+      <main className="md:pl-56 h-full pt-[80px]"> {children}</main>
     </div>
   );
 }
