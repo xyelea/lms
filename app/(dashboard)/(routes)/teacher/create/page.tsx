@@ -43,9 +43,10 @@ export default function CreateCoursePage() {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       // Mengirim data form ke API menggunakan metode POST
-      const response = await axios.post("/api/course", values);
+      const response = await axios.post("/api/courses", values);
       // Jika pengiriman berhasil, redirect pengguna ke halaman detail course yang baru dibuat
       router.push(`/teacher/courses/${response.data.id}`);
+      toast.success("Course berhasil dibuat");
     } catch {
       // Jika terjadi kesalahan saat pengiriman data, tampilkan notifikasi error
       toast.error("Terjadi kesalahan");
