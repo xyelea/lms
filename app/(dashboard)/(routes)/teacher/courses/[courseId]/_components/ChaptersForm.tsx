@@ -13,12 +13,13 @@ import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Chapter, Course } from "@prisma/client";
 import axios from "axios";
-import { PlusCircle } from "lucide-react";
+import { Loader2, PlusCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { z } from "zod";
+import ChapterList from "./ChapterList";
 
 interface ChaptersFormProps {
   initialData: Course & { chapters: Chapter[] };
@@ -62,9 +63,35 @@ export default function ChaptersForm({
       toast.error("Terjadi kesalahan");
     }
   };
+  // Fungsi yang dipanggil saat mengubah urutan chapter
+  const onReorder = async (updateData: { id: string; position: number }[]) => {
+    try {
+      setIsUpdating(true); // Mengatur status bahwa sedang dalam proses pembaruan
+
+      // Melakukan permintaan PUT ke backend Next.js untuk memperbarui urutan chapter
+      await axios.put(`/api/courses/${courseId}/chapters/reorder`, {
+        list: updateData, // Mengirim data urutan yang baru ke backend
+      });
+      toast.success("Urutan chapter telah diatur"); // Memberikan pemberitahuan berhasil
+      router.refresh(); // Me-refresh halaman untuk menampilkan perubahan yang baru
+    } catch (error) {
+      toast.error("Terjadi kesalahan"); // Menampilkan pesan kesalahan jika terjadi error
+    } finally {
+      setIsUpdating(false); // Mengatur status bahwa proses pembaruan sudah selesai
+    }
+  };
+
+  const onEdit = (id: string) => {
+    router.push(`/teacher/courses/${courseId}/chapters/${id}`);
+  };
 
   return (
-    <div className="mt-6 border bg-slate-100 rounded-md p-4">
+    <div className="relative mt-6 border bg-slate-100 rounded-md p-4">
+      {isUpdating && (
+        <div className="absolute h-full w-full bg-slate-500/20 top-0 right-0 rounded-md flex items-center justify-center">
+          <Loader2 className="animate-spin h-6 w-6 text-sky-700" />
+        </div>
+      )}
       <div className="font-medium flex items-center justify-between">
         Chapter course
         <Button onClick={toggleCreating} variant={"ghost"}>
@@ -113,6 +140,11 @@ export default function ChaptersForm({
           )}>
           {!initialData.chapters.length && "Belum ada chapter"}
           {/* Todo : Add a list of chapter */}
+          <ChapterList
+            onEdit={onEdit}
+            onReorder={onReorder}
+            items={initialData.chapters || []}
+          />
         </div>
       )}
       {!isCreating && (
