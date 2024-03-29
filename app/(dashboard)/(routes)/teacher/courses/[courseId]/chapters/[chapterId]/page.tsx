@@ -6,6 +6,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import React from "react";
 import ChapterTitleForm from "../../_components/ChapterTitleForm";
+import ChapterDescriptionForm from "./_components/ChapterDescriptionForm";
 
 export default async function ChapterPage({
   params,
@@ -73,6 +74,12 @@ export default async function ChapterPage({
             </div>
             {/* Menampilkan form untuk mengubah judul chapter */}
             <ChapterTitleForm
+              initialData={chapter}
+              courseId={params.courseId}
+              chapterId={params.chapterId}
+            />
+            {/* Menampilkan form untuk mengubah deskripsi chapter */}
+            <ChapterDescriptionForm
               initialData={chapter}
               courseId={params.courseId}
               chapterId={params.chapterId}
